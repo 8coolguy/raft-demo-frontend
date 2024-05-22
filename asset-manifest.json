@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/raft-demo-frontend/static/css/main.f855e6bc.css",
+    "main.js": "/raft-demo-frontend/static/js/main.5383719e.js",
+    "static/js/453.be0d2f4b.chunk.js": "/raft-demo-frontend/static/js/453.be0d2f4b.chunk.js",
+    "index.html": "/raft-demo-frontend/index.html",
+    "main.f855e6bc.css.map": "/raft-demo-frontend/static/css/main.f855e6bc.css.map",
+    "main.5383719e.js.map": "/raft-demo-frontend/static/js/main.5383719e.js.map",
+    "453.be0d2f4b.chunk.js.map": "/raft-demo-frontend/static/js/453.be0d2f4b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.5383719e.js"
+  ]
+}
