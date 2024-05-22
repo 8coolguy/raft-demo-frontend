@@ -1,16 +1,16 @@
-import { BrowserRouter, Routes, Route, Link, Outlet } from "react-router-dom";
+import { HashRouter, Routes, Route, Link, Outlet } from "react-router-dom";
 import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="status" element={<Status />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 function Layout(){
