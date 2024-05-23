@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route, Link, Outlet } from "react-router-dom";
 import  NavBar from "./Components/Navbar";
 import  Home from "./Components/Editor";
+import { useState } from "react";
 import './App.css';
 
 function App() {
@@ -21,11 +22,12 @@ function App() {
       content:"slfsdfsdfsdfsdfdsfsdfsdfsddflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsddslfksjdlfjk\n"
     }
   ]
+  const [directory,setDirectory] = useState(files);
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<NavBar />}>
-          <Route index element={<Home directory={files} />} />
+          <Route index element={<Home directory={directory} setDirectory={setDirectory} />} />
           <Route path="status" element={<Status />}/>
         </Route>
       </Routes>
