@@ -11,7 +11,7 @@ function Sidebar({directory,selected,setSelect}){
   return(
     <Container fluid className="bg-secondary">
     {directory.map(element => {
-      if(directory.indexOf(element) === selected)
+      if(directory.indexOf(element) == selected)
         return (<Row text id="selected" className="bg-primary text-white">
           <a>{element.name}</a>
         </Row>)
@@ -32,18 +32,24 @@ class Editor extends React.Component{
       newText:``
     }
   }
-  componentDidUpdate(prevProps) {
-    if (this.props.file !== prevProps.file) {
+  componentDidUpdate(prevProps,prevState) {
+    if (this.props.file.id != prevProps.file.id) {
       this.setState({
         file:this.props.file,
         text:this.props.file.content,
         newText:``
       });
+    }else if(this.props.file.timestamp != prevProps.file.timestamp){
+      this.setState({
+        file:this.props.file,
+        text:this.props.file.content,
+        newText:prevState.text
+      });
     }
   }
   render(){
     if(this.state.newText.length!==0)
-      return( <div id="editor"> <ReactDiffViewer oldValue={this.state.text} newValue={this.state.newText} splitView={true} /> </div>)
+      return( <div id="editor"> <ReactDiffViewer oldValue={this.state.text} newValue={this.state.newText} /> </div>)
     return (
       <div id="editor">
         <CodeEditor autoFocus minHeight={"80vh"} value={this.state.text} placeholder="Type Something" onChange={(event) => this.setState({text:event.target.value})}/>
@@ -51,8 +57,31 @@ class Editor extends React.Component{
     )
   }
 }
-function CommitForm({file}){
+function CommitForm({file,setDirectory}){
+  const files = [
+    {
+      id:0,
+      name:"file 1",
+      timestamp:5,
+      content:"sldflsdkfjlsjflksdjf\n"
+    },
+    {
+      id:1,
+      name:"file 2",
+      timestamp:3,
+      content:"sldflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsd"
+    },
+    {
+      id:2,
+      name:"file 3",
+      timestamp:5,
+      content:"slfsdfsdfsdfsdfdsfsdfsdfsddflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsddslfksjdlfjk\n"
+    }
+  ]
   const [commitMessage,setCommit] = useState("");
+  const getDirectory = () => {
+    setDirectory(files);
+  }
   return (
     <Container fluid className="bg-secondary text-white">
       <Form>
@@ -64,7 +93,7 @@ function CommitForm({file}){
             </Col>
             <Col md="auto">
               <Button className="rounded" type="submit" variant="success">Commit</Button>
-              <Button className="rounded" variant="primary">Fetch</Button>
+              <Button className="rounded" variant="primary" onClick={getDirectory}>Fetch</Button>
             </Col>
           </Row>
         </Form.Group>
@@ -77,6 +106,7 @@ function Home({directory,setDirectory}){
     event.preventDefault();
     //if name is unique add to directory and push to server to add to directory
     setDirectory([...directory, {
+      id:directory.length,
       name:newName,
       timestamp:0,
       content:""
@@ -111,7 +141,7 @@ function Home({directory,setDirectory}){
           </Form>
         </Col>
         <Col className="p-0 bg-secondary" xs={16} md={10}>
-          <CommitForm file={directory[select]} />
+          <CommitForm file={directory[select]} setDirectory={setDirectory}/>
         </Col>
       </Row>
     </Container>

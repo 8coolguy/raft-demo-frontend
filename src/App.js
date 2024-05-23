@@ -7,16 +7,19 @@ import './App.css';
 function App() {
   const files = [
     {
+      id:0,
       name:"file 1",
-      timestamp:2,
+      timestamp:3,
       content:"sldflsdkfjlsjflksdjf\n"
     },
     {
+      id:1,
       name:"file 2",
       timestamp:3,
       content:"sldflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsd"
     },
     {
+      id:2,
       name:"file 3",
       timestamp:5,
       content:"slfsdfsdfsdfsdfdsfsdfsdfsddflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsddslfksjdlfjk\n"
