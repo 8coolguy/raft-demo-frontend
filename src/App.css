@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+#unselected:hover {
+    background-color: #282c34;
+}
+#editor {
+  height:80vh;
+  overflow-y: auto
+}
