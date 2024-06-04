@@ -4,6 +4,23 @@ import ReactDiffViewer from "react-diff-viewer";
 import { Row, Col, Container, Button, Form} from "react-bootstrap";
 import CodeEditor from "@uiw/react-textarea-code-editor/nohighlight";
 
+const nodes =[
+  "http://localhost:8081/files/",
+  "http://localhost:8082/files/"
+]
+function push(name,content){
+  nodes.forEach(element => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', element+name);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        console.log("Pushed File")
+      }
+    };
+  xhr.send(content);
+  });
+}
+
 function Sidebar({directory,selected,setSelect}){
   const handleSelect = (event) => {
     setSelect(event.target.attributes.value.value);
@@ -31,6 +48,7 @@ class Editor extends React.Component{
       text:props.file.content,
       newText:``
     }
+    this.setText = props.setText;
   }
   componentDidUpdate(prevProps,prevState) {
     if (this.props.file.id != prevProps.file.id) {
@@ -46,6 +64,7 @@ class Editor extends React.Component{
         newText:prevState.text
       });
     }
+    this.setText(this.state.text);
   }
   render(){
     if(this.state.newText.length!==0)
@@ -57,30 +76,32 @@ class Editor extends React.Component{
     )
   }
 }
-function CommitForm({file,setDirectory}){
-  const files = [
-    {
-      id:0,
-      name:"file 1",
-      timestamp:5,
-      content:"sldflsdkfjlsjflksdjf\n"
-    },
-    {
-      id:1,
-      name:"file 2",
-      timestamp:3,
-      content:"sldflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsd"
-    },
-    {
-      id:2,
-      name:"file 3",
-      timestamp:5,
-      content:"slfsdfsdfsdfsdfdsfsdfsdfsddflsdkfjlsjflksdjf\nfsljdflkdsjflksd\ndsjflkdsfjlsdkjflsdf\ndsfljsdlfkjdskf\nksdjflksdjflksdf\nlsdkjflskdjf\nfsdkjflsdjfldskjfsddslfksjdlfjk\n"
-    }
-  ]
+function CommitForm({text,file,setDirectory}){
   const [commitMessage,setCommit] = useState("");
-  const getDirectory = () => {
-    setDirectory(files);
+  
+  const commit = (event) =>{
+    event.preventDefault()
+    setCommit("");
+    console.log(file);
+    push(file.name,text);
+  }
+  const fetch = () => {
+    nodes.forEach(element => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', element+"all");
+      
+      xhr.onload = function() {
+        let response = JSON.parse(xhr.response);
+        if (!response["Error"]) {
+          let res =[];
+          Object.keys(response).forEach(element => {
+            res.push({id:response[element]["filename"],name:response[element]["filename"],timestamp:Date.parse(response[element]["timestamp"]),content:response[element]["content"]})
+          });
+          setDirectory(res);
+        }
+      };
+      xhr.send();
+    });
   }
   return (
     <Container fluid className="bg-secondary text-white">
@@ -92,8 +113,8 @@ function CommitForm({file,setDirectory}){
               <Form.Control size="sm" type="name" placeholder="Commit Message" value={commitMessage} onChange={(event)=>setCommit(event.target.value)}/>
             </Col>
             <Col md="auto">
-              <Button className="rounded" type="submit" variant="success">Commit</Button>
-              <Button className="rounded" variant="primary" onClick={getDirectory}>Fetch</Button>
+              <Button className="rounded" type="submit" variant="success" onClick={commit}>Commit</Button>
+              <Button className="rounded" variant="primary" onClick={fetch}>Fetch</Button>
             </Col>
           </Row>
         </Form.Group>
@@ -104,6 +125,7 @@ function CommitForm({file,setDirectory}){
 function Home({directory,setDirectory}){
   const addFile = (event) =>{
     event.preventDefault();
+    push(newName,"");
     //if name is unique add to directory and push to server to add to directory
     setDirectory([...directory, {
       id:directory.length,
@@ -112,8 +134,9 @@ function Home({directory,setDirectory}){
       content:""
     }]);
   }
-  const [select,setSelect] = useState(2);
+  const [select,setSelect] = useState(0);
   const [newName, setName] = useState("");
+  const [text,setText] = useState("");
   return(
     <Container fluid>
       <Row id="editor">
@@ -121,7 +144,7 @@ function Home({directory,setDirectory}){
           <Sidebar directory={directory} selected={select} setSelect={setSelect}/>
         </Col>
         <Col className="p-0 bg-light" xs={16} md={10}>
-          <Editor selected={select} file={directory[select]}/>
+          <Editor setText={setText} selected={select} file={directory[select]}/>
         </Col>
       </Row>
       <Row id="creator">
@@ -141,17 +164,11 @@ function Home({directory,setDirectory}){
           </Form>
         </Col>
         <Col className="p-0 bg-secondary" xs={16} md={10}>
-          <CommitForm file={directory[select]} setDirectory={setDirectory}/>
+          <CommitForm text={text} file={directory[select]} setDirectory={setDirectory}/>
         </Col>
       </Row>
     </Container>
   )
-
-
-
-
-
-
 }
 
 export default Home;
