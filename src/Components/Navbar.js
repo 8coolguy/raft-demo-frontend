@@ -21,14 +21,13 @@ function NavBar(){
     return (<>
       <Navbar className="bg-info" expand="lg">
             <Navbar.Brand href="#/" className="mx-auto justify-content-center">Raft Demo </Navbar.Brand> 
-            <Nav className="bg-grey">
+            {/* <Nav className="bg-grey">
               <NavDropdown title="Servers">
                 <NavDropdown.Item>Item 1</NavDropdown.Item>
                 <NavDropdown.Item>Item 2</NavDropdown.Item>
                 <NavDropdown.Item>Item 3</NavDropdown.Item>
               </NavDropdown>
-              {StatusOrHome(location)}
-            </Nav>
+            </Nav> */}
       </Navbar>
       <Outlet/>
     </>)

@@ -14,9 +14,10 @@ function push(name,content){
     xhr.open('POST', element+name);
     xhr.onload = function() {
       if (xhr.status === 200) {
-        console.log("Pushed File")
+        alert("Pushed");
       }
     };
+  console.log(content);
   xhr.send(content);
   });
 }
@@ -57,7 +58,7 @@ class Editor extends React.Component{
         text:this.props.file.content,
         newText:``
       });
-    }else if(this.props.file.timestamp != prevProps.file.timestamp){
+    }else if(this.props.file.timestamp > prevProps.file.timestamp && prevState.text != this.props.file.content){
       this.setState({
         file:this.props.file,
         text:this.props.file.content,
@@ -67,8 +68,16 @@ class Editor extends React.Component{
     this.setText(this.state.text);
   }
   render(){
-    if(this.state.newText.length!==0)
-      return( <div id="editor"> <ReactDiffViewer oldValue={this.state.text} newValue={this.state.newText} /> </div>)
+    if(this.state.newText.length!==0){
+      return(<div id="editor">
+        <ReactDiffViewer oldValue={this.state.text} newValue={this.state.newText}/>
+        <Row m="auto">
+          <Button className="rounded" type="submit" variant="danger" onClick={()=>this.setState({text:this.state.text,newText:``})}>Left</Button>
+          <Button className="rounded" variant="success" onClick={()=>this.setState({text:this.state.newText,newText:``})}>Right</Button>
+        </Row> 
+      </div>)
+    
+    }
     return (
       <div id="editor">
         <CodeEditor autoFocus minHeight={"80vh"} value={this.state.text} placeholder="Type Something" onChange={(event) => this.setState({text:event.target.value})}/>
@@ -82,7 +91,6 @@ function CommitForm({text,file,setDirectory}){
   const commit = (event) =>{
     event.preventDefault()
     setCommit("");
-    console.log(file);
     push(file.name,text);
   }
   const fetch = () => {
@@ -98,6 +106,7 @@ function CommitForm({text,file,setDirectory}){
             res.push({id:response[element]["filename"],name:response[element]["filename"],timestamp:Date.parse(response[element]["timestamp"]),content:response[element]["content"]})
           });
           setDirectory(res);
+          alert("Retrived");
         }
       };
       xhr.send();
@@ -136,7 +145,7 @@ function Home({directory,setDirectory}){
   }
   const [select,setSelect] = useState(0);
   const [newName, setName] = useState("");
-  const [text,setText] = useState("");
+  const [text,setText] = useState(directory[select].content);
   return(
     <Container fluid>
       <Row id="editor">

@@ -4,6 +4,10 @@ import  Home from "./Components/Editor";
 import { useState, useEffect } from "react";
 import './App.css';
 
+const nodes =[
+  "http://localhost:8081/files/",
+  "http://localhost:8082/files/"
+]
 function App() {
   
   const files = [
@@ -20,14 +24,11 @@ function App() {
       <Routes>
         <Route path="/" element={<NavBar />}>
           <Route index element={<Home directory={directory} setDirectory={setDirectory} />} />
-          <Route path="status" element={<Status />}/>
         </Route>
       </Routes>
     </HashRouter>
   );
 }
-function Status(){
-  return (<div>Hello Status</div>)
-}
+
 
 export default App;
